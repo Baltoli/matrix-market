@@ -1,7 +1,7 @@
 project(libmm VERSION 0.1 LANGUAGES CXX)
 
 add_library(mm
-  src/lib.cpp)
+  src/header.cpp)
 
 target_include_directories(mm PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -9,7 +9,7 @@ target_include_directories(mm PUBLIC
   PRIVATE src)
 
 target_compile_features(mm
-  PUBLIC cxx_auto_type
+  PUBLIC cxx_std_17
 )
 
 install(TARGETS mm EXPORT MatrixMarketConfig
@@ -23,7 +23,8 @@ install(EXPORT MatrixMarketConfig DESTINATION share/MatrixMarket/cmake)
 export(TARGETS mm FILE MatrixMarketConfig.cmake)
 
 add_executable(test-mm
-  test/main.cpp)
+  test/main.cpp
+  test/header.cpp)
 
 target_link_libraries(test-mm
   mm)
