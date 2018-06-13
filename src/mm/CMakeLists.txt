@@ -1,7 +1,9 @@
 project(libmm VERSION 0.1 LANGUAGES CXX)
 
 add_library(mm
-  src/header.cpp)
+  src/header.cpp
+  src/matrix.cpp
+  src/utils.cpp)
 
 target_include_directories(mm PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
