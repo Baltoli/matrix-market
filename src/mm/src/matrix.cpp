@@ -2,8 +2,11 @@
 
 namespace mm {
 
-std::unique_ptr<coordinate_matrix> read_from_string(std::string_view data)
+std::unique_ptr<coordinate_matrix> 
+coordinate_matrix::read_from_string(std::string_view data)
 {
+  auto mat = std::unique_ptr<coordinate_matrix>{new coordinate_matrix{}};
+  return mat;
 }
 
 double coordinate_matrix::operator()(size_t x, size_t y) const
