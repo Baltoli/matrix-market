@@ -36,8 +36,8 @@ line_iterator::value_type line_iterator::operator*() const
 
 bool line_iterator::operator==(line_iterator const& other) const
 {
-  return line_begin_ == other.line_begin_ &&
-         line_end_ == other.line_end_;
+  return (line_begin_ >= data_.size() && other.line_begin_ >= data_.size()) ||
+         (line_begin_ == other.line_begin_ && line_end_ == other.line_end_);
 }
 
 bool line_iterator::operator!=(line_iterator const& other) const
@@ -47,7 +47,7 @@ bool line_iterator::operator!=(line_iterator const& other) const
 
 line_iterator& line_iterator::operator++()
 {
-  while(data_.at(line_begin_) != '\n') {
+  while(line_begin_ < data_.size() && data_.at(line_begin_) != '\n') {
     ++line_begin_;
   }
   advance();
@@ -68,7 +68,7 @@ proxy<std::string_view> line_iterator::operator->() const
 
 void line_iterator::advance()
 {
-  while(data_.at(line_begin_) == '\n') {
+  while(line_begin_ < data_.size() && data_.at(line_begin_) == '\n') {
     ++line_begin_;
   }
 

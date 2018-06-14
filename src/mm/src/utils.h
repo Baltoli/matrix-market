@@ -67,4 +67,15 @@ private:
   std::string_view data_;
 };
 
+class lines {
+public:
+  lines(std::string_view str) : str_(str) {}
+
+  line_iterator begin() const { return line_iterator(str_, 0); }
+  line_iterator end() const { return line_iterator(str_, std::string_view::npos); }
+
+private:
+  std::string_view str_;
+};
+
 }

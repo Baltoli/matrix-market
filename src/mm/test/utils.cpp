@@ -51,6 +51,14 @@ TEST_CASE("can iterate over lines in a string")
 
     REQUIRE(sum == 6);
   }
+
+  SECTION("using iterators") {
+    auto sum = 0;
+    for(auto line : lines(str)) {
+      sum += std::atoi(line.data());
+    }
+    REQUIRE(sum == 6);
+  }
 }
 
 TEST_CASE("line iterators") {
