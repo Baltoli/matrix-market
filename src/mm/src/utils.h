@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iterator>
 #include <string_view>
 
 namespace mm {
@@ -30,5 +31,40 @@ void for_each_line(std::string_view str, F&& f)
     }
   } while(true);
 }
+
+template <typename T>
+class proxy {
+public:
+  proxy(T const& t) : t_(t) {}
+  T* operator->() { return &t_; };
+
+private:
+  T t_;
+};
+
+class line_iterator {
+public:
+  using difference_type = void;
+  using value_type = std::string_view;
+  using pointer = std::string_view*;
+  using reference = std::string_view&;
+  using category = std::input_iterator_tag;
+
+  line_iterator(std::string_view, std::string_view::size_type);
+
+  value_type operator*() const;
+  bool operator==(line_iterator const& other) const;
+  bool operator!=(line_iterator const& other) const;
+  line_iterator& operator++();
+  line_iterator operator++(int);
+  proxy<std::string_view> operator->() const;
+
+private:
+  void advance();
+
+  std::string_view::size_type line_begin_;
+  std::string_view::size_type line_end_;
+  std::string_view data_;
+};
 
 }

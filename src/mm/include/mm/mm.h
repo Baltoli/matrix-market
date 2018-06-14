@@ -50,6 +50,8 @@ public:
 
 private:
   coordinate_matrix() = default;
+  
+  void process_line(std::string_view line);
 
   size_t rows_ = 0;
   size_t cols_ = 0;

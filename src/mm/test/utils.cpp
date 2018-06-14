@@ -32,7 +32,7 @@ TEST_CASE("can check for prefixes")
 
 TEST_CASE("can iterate over lines in a string")
 {
-  auto str = R"(
+    auto str = R"(
 1
 
 2
@@ -40,12 +40,41 @@ TEST_CASE("can iterate over lines in a string")
 
 3
 
-  )";
+)";
 
-  int sum = 0;
-  for_each_line(str, [&sum] (auto line) {
-    sum += std::atoi(line.data());
-  });
+  SECTION("using lambda based") {
 
-  REQUIRE(sum == 6);
+    int sum = 0;
+    for_each_line(str, [&sum] (auto line) {
+      sum += std::atoi(line.data());
+    });
+
+    REQUIRE(sum == 6);
+  }
+}
+
+TEST_CASE("line iterators") {
+  static_assert(std::is_copy_constructible_v<line_iterator>);
+  static_assert(std::is_copy_assignable_v<line_iterator>);
+  static_assert(std::is_destructible_v<line_iterator>);
+  static_assert(std::is_swappable_v<line_iterator>);
+
+  auto str = "abc\ndef\nfgh";
+  auto it = line_iterator(str, 0);
+  auto it2 = line_iterator(str, 0);
+
+  REQUIRE(*it == "abc");
+  REQUIRE(it == it2);
+  REQUIRE(*it == *it2);
+
+  REQUIRE(++it != it2);
+  REQUIRE(*it == "def");
+  REQUIRE(*it != *it2);
+
+  auto it3 = it++;
+  REQUIRE(*it3 == "def");
+  REQUIRE(*it == "fgh");
+  REQUIRE(it3 != it);
+
+  REQUIRE(it->at(0) == 'f');
 }
