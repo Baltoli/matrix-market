@@ -62,14 +62,14 @@ TEST_CASE("can iterate over lines in a string")
 }
 
 TEST_CASE("line iterators") {
-  static_assert(std::is_copy_constructible_v<line_iterator>);
-  static_assert(std::is_copy_assignable_v<line_iterator>);
-  static_assert(std::is_destructible_v<line_iterator>);
-  static_assert(std::is_swappable_v<line_iterator>);
+  static_assert(std::is_copy_constructible_v<split_iterator>);
+  static_assert(std::is_copy_assignable_v<split_iterator>);
+  static_assert(std::is_destructible_v<split_iterator>);
+  static_assert(std::is_swappable_v<split_iterator>);
 
   auto str = "abc\ndef\nfgh";
-  auto it = line_iterator(str, 0);
-  auto it2 = line_iterator(str, 0);
+  auto it = split_iterator('\n', str, 0);
+  auto it2 = split_iterator('\n', str, 0);
 
   REQUIRE(*it == "abc");
   REQUIRE(it == it2);

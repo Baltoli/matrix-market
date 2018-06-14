@@ -22,57 +22,57 @@ std::pair<bool, std::string_view> starts_with(std::string_view str, std::string_
   return { eq, eq ? left_trim(str.substr(prefix.length())) : str };
 }
 
-line_iterator::line_iterator(std::string_view s, std::string_view::size_type begin)
-  : data_(s), line_begin_(begin), line_end_(begin)
+split_iterator::split_iterator(char d, std::string_view s, std::string_view::size_type begin)
+  : delim_(d), data_(s), line_begin_(begin), line_end_(begin)
 {
   advance();
 }
 
-line_iterator::value_type line_iterator::operator*() const
+split_iterator::value_type split_iterator::operator*() const
 {
   if(line_begin_ >= data_.size()) { return ""; }
   return data_.substr(line_begin_, line_end_ - line_begin_);
 }
 
-bool line_iterator::operator==(line_iterator const& other) const
+bool split_iterator::operator==(split_iterator const& other) const
 {
   return (line_begin_ >= data_.size() && other.line_begin_ >= data_.size()) ||
          (line_begin_ == other.line_begin_ && line_end_ == other.line_end_);
 }
 
-bool line_iterator::operator!=(line_iterator const& other) const
+bool split_iterator::operator!=(split_iterator const& other) const
 {
   return !(*this == other);
 }
 
-line_iterator& line_iterator::operator++()
+split_iterator& split_iterator::operator++()
 {
-  while(line_begin_ < data_.size() && data_.at(line_begin_) != '\n') {
+  while(line_begin_ < data_.size() && data_.at(line_begin_) != delim_) {
     ++line_begin_;
   }
   advance();
   return *this;
 }
 
-line_iterator line_iterator::operator++(int)
+split_iterator split_iterator::operator++(int)
 {
   auto ret = *this;
   this->operator++();
   return ret;
 }
 
-proxy<std::string_view> line_iterator::operator->() const
+proxy<std::string_view> split_iterator::operator->() const
 {
   return proxy<std::string_view>(**this);
 }
 
-void line_iterator::advance()
+void split_iterator::advance()
 {
-  while(line_begin_ < data_.size() && data_.at(line_begin_) == '\n') {
+  while(line_begin_ < data_.size() && data_.at(line_begin_) == delim_) {
     ++line_begin_;
   }
 
-  line_end_ = data_.find('\n', line_begin_);
+  line_end_ = data_.find(delim_, line_begin_);
 }
 
 }

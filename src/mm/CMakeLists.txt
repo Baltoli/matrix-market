@@ -27,7 +27,8 @@ export(TARGETS mm FILE MatrixMarketConfig.cmake)
 add_executable(test-mm
   test/main.cpp
   test/header.cpp
-  test/utils.cpp)
+  test/utils.cpp
+  test/matrix.cpp)
 
 target_include_directories(test-mm
   PRIVATE src)

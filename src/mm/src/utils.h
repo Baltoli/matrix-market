@@ -42,7 +42,7 @@ private:
   T t_;
 };
 
-class line_iterator {
+class split_iterator {
 public:
   using difference_type = void;
   using value_type = std::string_view;
@@ -50,18 +50,19 @@ public:
   using reference = std::string_view&;
   using category = std::input_iterator_tag;
 
-  line_iterator(std::string_view, std::string_view::size_type);
+  split_iterator(char d_, std::string_view, std::string_view::size_type);
 
   value_type operator*() const;
-  bool operator==(line_iterator const& other) const;
-  bool operator!=(line_iterator const& other) const;
-  line_iterator& operator++();
-  line_iterator operator++(int);
+  bool operator==(split_iterator const& other) const;
+  bool operator!=(split_iterator const& other) const;
+  split_iterator& operator++();
+  split_iterator operator++(int);
   proxy<std::string_view> operator->() const;
 
 private:
   void advance();
 
+  char delim_;
   std::string_view::size_type line_begin_;
   std::string_view::size_type line_end_;
   std::string_view data_;
@@ -71,8 +72,19 @@ class lines {
 public:
   lines(std::string_view str) : str_(str) {}
 
-  line_iterator begin() const { return line_iterator(str_, 0); }
-  line_iterator end() const { return line_iterator(str_, std::string_view::npos); }
+  split_iterator begin() const { return split_iterator('\n', str_, 0); }
+  split_iterator end() const { return split_iterator('\n', str_, std::string_view::npos); }
+
+private:
+  std::string_view str_;
+};
+
+class columns {
+public:
+  columns(std::string_view str) : str_(str) {}
+
+  split_iterator begin() const { return split_iterator(' ', str_, 0); }
+  split_iterator end() const { return split_iterator(' ', str_, std::string_view::npos); }
 
 private:
   std::string_view str_;
