@@ -46,7 +46,7 @@ public:
   size_t rows() const override;
   size_t cols() const override;
 
-  static std::unique_ptr<coordinate_matrix> read_from_string(std::string_view data);
+  static coordinate_matrix read_from_string(std::string_view data);
 
 private:
   coordinate_matrix() = default;
@@ -55,7 +55,7 @@ private:
 
   size_t rows_ = 0;
   size_t cols_ = 0;
-  std::map<std::pair<size_t, size_t>, double> entries = {};
+  std::map<std::pair<size_t, size_t>, double> entries_ = {};
 };
 
 }
