@@ -58,4 +58,21 @@ size_t coordinate_matrix::cols() const
 {
 }
 
+csr_matrix::csr_matrix(coordinate_matrix const& coo)
+{
+}
+
+double csr_matrix::operator()(size_t row, size_t col) const
+{
+  return 0.0;
+}
+
+size_t csr_matrix::rows() const
+{
+}
+
+size_t csr_matrix::cols() const
+{
+}
+
 }

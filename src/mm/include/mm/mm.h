@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include <string_view>
+#include <vector>
 
 namespace mm {
 
@@ -56,6 +57,20 @@ private:
   size_t rows_ = 0;
   size_t cols_ = 0;
   std::map<std::pair<size_t, size_t>, double> entries_ = {};
+};
+
+class csr_matrix : public matrix {
+public:
+  explicit csr_matrix(coordinate_matrix const& coo);
+
+  double operator()(size_t x, size_t y) const override;
+  size_t rows() const override;
+  size_t cols() const override;
+
+private:
+  std::vector<double> values_;
+  std::vector<int> rowptr_;
+  std::vector<int> colidx_;
 };
 
 }
