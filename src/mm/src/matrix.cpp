@@ -62,21 +62,85 @@ size_t coordinate_matrix::cols() const
   return cols_;
 }
 
-csr_matrix::csr_matrix(coordinate_matrix const& coo)
+csr_matrix::csr_matrix(coordinate_matrix const& coo) :
+  csr_matrix(0, coo)
 {
+}
+
+csr_matrix::csr_matrix(one_based_index_t tag, coordinate_matrix const& coo) :
+  csr_matrix(1, coo)
+{
+}
+
+csr_matrix::csr_matrix(size_t o, coordinate_matrix const& coo) :
+ offset_(o),  rows_(coo.rows()), cols_(coo.cols())
+{
+  rowptr_.push_back(offset_);
+
+  for(auto row = 0; row < rows_; ++row) {
+    size_t row_count = 0;
+
+    for(auto col = 0; col < cols_; ++col) {
+      auto val = coo(row, col);
+      if(val != 0) {
+        row_count++;
+        nnz_++;
+
+        colidx_.push_back(col + offset_);
+        values_.push_back(val);
+      }
+    }
+
+    rowptr_.push_back(row_count + rowptr_.back());
+  }
 }
 
 double csr_matrix::operator()(size_t row, size_t col) const
 {
+  row = row - offset_;
+
+  for(auto i = rowptr().at(row) - offset_; 
+      i < rowptr().at(row + 1); 
+      ++i) 
+  {
+    if(colidx().at(i) == col) {
+      return values().at(i);
+    }
+  }
+
   return 0.0;
 }
 
 size_t csr_matrix::rows() const
 {
+  return rows_;
 }
 
 size_t csr_matrix::cols() const
 {
+  return cols_;
 }
+
+size_t csr_matrix::nnz() const
+{
+  return nnz_;
+}
+
+std::vector<double> const& csr_matrix::values() const
+{
+  return values_;
+}
+
+std::vector<size_t> const& csr_matrix::rowptr() const
+{
+  return rowptr_;
+}
+
+std::vector<size_t> const& csr_matrix::colidx() const
+{
+  return colidx_;
+}
+
+one_based_index_t one_based_index = {};
 
 }

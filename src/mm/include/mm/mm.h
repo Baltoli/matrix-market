@@ -59,18 +59,35 @@ private:
   std::map<std::pair<size_t, size_t>, double> entries_ = {};
 };
 
+struct one_based_index_t {};
+extern one_based_index_t one_based_index;
+
 class csr_matrix : public matrix {
 public:
   explicit csr_matrix(coordinate_matrix const& coo);
+  csr_matrix(one_based_index_t tag, coordinate_matrix const& coo);
 
   double operator()(size_t x, size_t y) const override;
   size_t rows() const override;
   size_t cols() const override;
 
+  std::vector<double> const& values() const;
+  std::vector<size_t> const& rowptr() const;
+  std::vector<size_t> const& colidx() const;
+
+  size_t nnz() const;
+
 private:
+  csr_matrix(size_t offset, coordinate_matrix const& coo);
+
   std::vector<double> values_;
-  std::vector<int> rowptr_;
-  std::vector<int> colidx_;
+  std::vector<size_t> rowptr_;
+  std::vector<size_t> colidx_;
+
+  size_t offset_;
+  size_t rows_;
+  size_t cols_;
+  size_t nnz_ = 0;
 };
 
 }
