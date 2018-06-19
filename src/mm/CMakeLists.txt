@@ -1,6 +1,8 @@
 project(libmm VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+  -Wall -pedantic \
+  -Wno-sign-compare")
 
 add_library(mm
   src/header.cpp
@@ -31,6 +33,9 @@ add_executable(test-mm
   test/header.cpp
   test/utils.cpp
   test/matrix.cpp)
+
+target_compile_definitions(test-mm
+  PRIVATE RESOURCE_DIR="${CMAKE_SOURCE_DIR}/test")
 
 target_include_directories(test-mm
   PRIVATE src)

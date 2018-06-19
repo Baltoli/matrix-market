@@ -1,0 +1,6 @@
+%%MatrixMarket matrix coordinate real general
+% Some
+% Comment lines before I
+% Use the real ones to describe a matrix
+10 10 6
+0 0 1.00

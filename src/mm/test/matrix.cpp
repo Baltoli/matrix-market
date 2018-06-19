@@ -144,3 +144,10 @@ TEST_CASE("can construct CSR matrices")
     REQUIRE(csr.rowptr() == std::vector<int>{{1, 1, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7}});
   }
 }
+
+TEST_CASE("can load matrices from file")
+{
+  auto path = RESOURCE_DIR "/test.mtx";
+
+  auto coo = coordinate_matrix::read_from_file(path);
+}

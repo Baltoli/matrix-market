@@ -2,6 +2,8 @@
 
 #include <mm/mm.h>
 
+#include <fstream>
+
 namespace mm {
 
 coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
@@ -25,7 +27,7 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
   mat.cols_ = std::atoi((col++)->data());
   auto nnz = std::atoi(col->data());
 
-  for(auto i = 0; line != all_lines.end() && i < nnz; ++line, ++nnz) {
+  for(auto i = 0; line != all_lines.end() && i < nnz; ++line, ++i) {
     mat.process_line(left_trim(*line), data_header.symmetry_type());
   }
 
@@ -34,6 +36,28 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
 
 coordinate_matrix coordinate_matrix::read_from_file(std::string const& filename)
 {
+  auto mat = coordinate_matrix{};
+  
+  auto in_stream = std::ifstream(filename);
+  auto line = std::string{};
+
+  std::getline(in_stream, line);
+  auto data_header = header(line);
+
+  do {
+    std::getline(in_stream, line);
+  } while(line.at(0) == '%');
+
+  auto col = columns(line).begin();
+  mat.rows_ = std::atoi((col++)->data());
+  mat.cols_ = std::atoi((col++)->data());
+  auto nnz = std::atoi(col->data());
+
+  for(auto i = 0; std::getline(in_stream, line) && i < nnz; ++i) {
+    mat.process_line(left_trim(line), data_header.symmetry_type());
+  }
+
+  return mat;
 }
 
 void coordinate_matrix::process_line(std::string_view line, symmetry sym)
