@@ -33,4 +33,7 @@ TEST_CASE("can use coordinate matrices")
   REQUIRE(mat(6, 1) == 0.0);
   REQUIRE(mat(2, 3) == 0.0);
   REQUIRE(mat(0, 7) == 0.0);
+
+  REQUIRE(mat.cols() == 10);
+  REQUIRE(mat.rows() == 10);
 }

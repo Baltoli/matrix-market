@@ -20,7 +20,9 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
 
   auto size_line = *line++;
   auto col = columns(size_line).begin();
-  ++col; ++col;
+
+  mat.rows_ = std::atoi((col++)->data());
+  mat.cols_ = std::atoi((col++)->data());
   auto nnz = std::atoi(col->data());
 
   for(auto i = 0; line != all_lines.end() && i < nnz; ++line, ++nnz) {
@@ -52,10 +54,12 @@ double coordinate_matrix::operator()(size_t row, size_t col) const
 
 size_t coordinate_matrix::rows() const
 {
+  return rows_;
 }
 
 size_t coordinate_matrix::cols() const
 {
+  return cols_;
 }
 
 csr_matrix::csr_matrix(coordinate_matrix const& coo)
