@@ -108,12 +108,16 @@ csr_matrix::csr_matrix(one_based_index_t tag, coordinate_matrix const& coo) :
 {
 }
 
+// This is very inefficient - can I do it smarter?
+// Also can't push big input files to github - just don't include them in the
+// repo I guess.
 csr_matrix::csr_matrix(size_t o, coordinate_matrix const& coo) :
  offset_(o),  rows_(coo.rows()), cols_(coo.cols())
 {
   rowptr_.push_back(offset_);
 
   for(auto row = 0u; row < rows_; ++row) {
+    std::cerr << row << " " << rows_ << '\n';
     size_t row_count = 0;
 
     for(auto col = 0u; col < cols_; ++col) {

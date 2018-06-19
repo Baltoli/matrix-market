@@ -147,7 +147,7 @@ TEST_CASE("can construct CSR matrices")
 
 TEST_CASE("can load matrices from file")
 {
-  auto path = RESOURCE_DIR "/test.mtx";
+  auto path = RESOURCE_DIR "/test/test.mtx";
 
   auto coo = coordinate_matrix::read_from_file(path);
 

@@ -141,3 +141,5 @@ tags
 
 
 # End of https://www.gitignore.io/api/c,osx,vim,c++,cmake,linux
+
+bench/

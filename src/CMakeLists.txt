@@ -4,4 +4,6 @@ project(matrix-market VERSION 0.1 LANGUAGES CXX)
 include(GNUInstallDirs)
 
 enable_testing()
+
+add_subdirectory(bench)
 add_subdirectory(mm)

@@ -35,7 +35,7 @@ add_executable(test-mm
   test/matrix.cpp)
 
 target_compile_definitions(test-mm
-  PRIVATE RESOURCE_DIR="${CMAKE_SOURCE_DIR}/test")
+  PRIVATE RESOURCE_DIR="${CMAKE_SOURCE_DIR}/inputs")
 
 target_include_directories(test-mm
   PRIVATE src)
