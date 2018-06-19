@@ -150,4 +150,14 @@ TEST_CASE("can load matrices from file")
   auto path = RESOURCE_DIR "/test.mtx";
 
   auto coo = coordinate_matrix::read_from_file(path);
+
+  REQUIRE(coo.rows() == 9);
+  REQUIRE(coo.cols() == 10);
+
+  REQUIRE(coo(0, 0) == 1.00);
+  REQUIRE(coo(1, 2) == 2.00);
+  REQUIRE(coo(5, 2) == 3.00);
+  REQUIRE(coo(5, 6) == 4.00);
+  REQUIRE(coo(7, 1) == 5.00);
+  REQUIRE(coo(8, 8) == 6.00);
 }

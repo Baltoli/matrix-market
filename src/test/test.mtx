@@ -2,5 +2,10 @@
 % Some
 % Comment lines before I
 % Use the real ones to describe a matrix
-10 10 6
+9 10 6
 0 0 1.00
+1 2 2.00
+5 2 3.00
+5 6 4.00
+7 1 5.00
+8 8 6.00
