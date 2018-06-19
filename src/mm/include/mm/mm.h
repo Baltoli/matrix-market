@@ -48,6 +48,7 @@ public:
   size_t cols() const override;
 
   static coordinate_matrix read_from_string(std::string_view data);
+  static coordinate_matrix read_from_file(std::string const& filename);
 
 private:
   coordinate_matrix() = default;

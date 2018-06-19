@@ -63,9 +63,9 @@ private:
   void advance();
 
   char delim_;
+  std::string_view data_;
   std::string_view::size_type line_begin_;
   std::string_view::size_type line_end_;
-  std::string_view data_;
 };
 
 class lines {

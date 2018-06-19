@@ -32,6 +32,10 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
   return mat;
 }
 
+coordinate_matrix coordinate_matrix::read_from_file(std::string const& filename)
+{
+}
+
 void coordinate_matrix::process_line(std::string_view line, symmetry sym)
 {
   auto it = columns(line).begin();
@@ -85,10 +89,10 @@ csr_matrix::csr_matrix(size_t o, coordinate_matrix const& coo) :
 {
   rowptr_.push_back(offset_);
 
-  for(auto row = 0; row < rows_; ++row) {
+  for(auto row = 0u; row < rows_; ++row) {
     size_t row_count = 0;
 
-    for(auto col = 0; col < cols_; ++col) {
+    for(auto col = 0u; col < cols_; ++col) {
       auto val = coo(row, col);
       if(val != 0) {
         row_count++;
@@ -107,11 +111,11 @@ double csr_matrix::operator()(size_t row, size_t col) const
 {
   row = row - offset_;
 
-  for(auto i = rowptr().at(row) - offset_; 
+  for(auto i = rowptr().at(row) - static_cast<int>(offset_);
       i < rowptr().at(row + 1); 
       ++i) 
   {
-    if(colidx().at(i) == col) {
+    if(colidx().at(i) == static_cast<int>(col)) {
       return values().at(i);
     }
   }

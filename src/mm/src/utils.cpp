@@ -6,7 +6,7 @@ namespace mm {
 
 std::string_view left_trim(std::string_view str)
 {
-  auto i = 0;
+  auto i = 0u;
   while(i < str.size() && std::isspace(str.at(i))) { ++i; }
 
   return str.substr(i);
