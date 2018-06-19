@@ -47,6 +47,8 @@ public:
   size_t rows() const override;
   size_t cols() const override;
 
+  std::map<std::pair<size_t, size_t>, double> const& entries() const;
+
   static coordinate_matrix read_from_string(std::string_view data);
   static coordinate_matrix read_from_file(std::string const& filename);
 

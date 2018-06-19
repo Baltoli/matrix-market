@@ -2,6 +2,7 @@
 
 #include <mm/mm.h>
 
+#include <algorithm>
 #include <fstream>
 
 namespace mm {
@@ -88,6 +89,11 @@ double coordinate_matrix::operator()(size_t row, size_t col) const
   return entries_.at({row, col});
 }
 
+std::map<std::pair<size_t, size_t>, double> const& coordinate_matrix::entries() const
+{
+  return entries_;
+}
+
 size_t coordinate_matrix::rows() const
 {
   return rows_;
@@ -108,27 +114,31 @@ csr_matrix::csr_matrix(one_based_index_t tag, coordinate_matrix const& coo) :
 {
 }
 
-// This is very inefficient - can I do it smarter?
-// Also can't push big input files to github - just don't include them in the
-// repo I guess.
 csr_matrix::csr_matrix(size_t o, coordinate_matrix const& coo) :
  offset_(o),  rows_(coo.rows()), cols_(coo.cols())
 {
+  auto const& entries = coo.entries();
+
   rowptr_.push_back(offset_);
 
   for(auto row = 0u; row < rows_; ++row) {
-    std::cerr << row << " " << rows_ << '\n';
     size_t row_count = 0;
 
-    for(auto col = 0u; col < cols_; ++col) {
-      auto val = coo(row, col);
-      if(val != 0) {
-        row_count++;
-        nnz_++;
+    const auto on_row = [row] (auto coord) {
+      return coord.first.first == row;
+    };
 
-        colidx_.push_back(col + offset_);
-        values_.push_back(val);
-      }
+    auto it = std::find_if(entries.begin(), entries.end(), on_row);
+
+    while(it != entries.end()) {
+      auto [coord, val] = *it;
+      row_count++;
+      nnz_++;
+
+      colidx_.push_back(coord.second + offset_);
+      values_.push_back(val);
+
+      it = std::find_if(std::next(it), entries.end(), on_row);
     }
 
     rowptr_.push_back(row_count + rowptr_.back());
