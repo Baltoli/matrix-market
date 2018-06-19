@@ -72,8 +72,8 @@ public:
   size_t cols() const override;
 
   std::vector<double> const& values() const;
-  std::vector<size_t> const& rowptr() const;
-  std::vector<size_t> const& colidx() const;
+  std::vector<int> const& rowptr() const;
+  std::vector<int> const& colidx() const;
 
   size_t nnz() const;
 
@@ -81,13 +81,23 @@ private:
   csr_matrix(size_t offset, coordinate_matrix const& coo);
 
   std::vector<double> values_;
-  std::vector<size_t> rowptr_;
-  std::vector<size_t> colidx_;
+  std::vector<int> rowptr_;
+  std::vector<int> colidx_;
 
   size_t offset_;
   size_t rows_;
   size_t cols_;
   size_t nnz_ = 0;
+};
+
+struct csr {
+  csr(csr_matrix const&);
+  ~csr();
+
+  double const * const a;
+  int const * const rowstr;
+  int const * const colidx;
+  int const * const rows;
 };
 
 }

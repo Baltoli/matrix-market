@@ -131,14 +131,26 @@ std::vector<double> const& csr_matrix::values() const
   return values_;
 }
 
-std::vector<size_t> const& csr_matrix::rowptr() const
+std::vector<int> const& csr_matrix::rowptr() const
 {
   return rowptr_;
 }
 
-std::vector<size_t> const& csr_matrix::colidx() const
+std::vector<int> const& csr_matrix::colidx() const
 {
   return colidx_;
+}
+
+csr::csr(csr_matrix const& coo)
+  : a(coo.values().data()), 
+    rowstr(coo.rowptr().data()), colidx(coo.colidx().data()),
+    rows(new int(coo.rows()))
+{
+}
+
+csr::~csr()
+{
+  delete rows;
 }
 
 one_based_index_t one_based_index = {};

@@ -67,8 +67,8 @@ TEST_CASE("can construct CSR matrices")
     REQUIRE(csr(5, 8) == 6.0);
 
     REQUIRE(csr.values() == std::vector<double>{{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}});
-    REQUIRE(csr.colidx() == std::vector<size_t>{{0, 7, 11, 3, 4, 8}});
-    REQUIRE(csr.rowptr() == std::vector<size_t>{{0, 2, 3, 3, 3, 3, 6, 6, 6}});
+    REQUIRE(csr.colidx() == std::vector<int>{{0, 7, 11, 3, 4, 8}});
+    REQUIRE(csr.rowptr() == std::vector<int>{{0, 2, 3, 3, 3, 3, 6, 6, 6}});
   }
 
   SECTION("using fortran indexing for triples") {
@@ -95,7 +95,7 @@ TEST_CASE("can construct CSR matrices")
     REQUIRE(csr(12, 8) == 0.6);
 
     REQUIRE(csr.values() == std::vector<double>{{0.1, 0.2, 0.3, 0.4, 0.5, 0.6}});
-    REQUIRE(csr.colidx() == std::vector<size_t>{{1, 2, 7, 8, 4, 8}});
-    REQUIRE(csr.rowptr() == std::vector<size_t>{{1, 1, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7}});
+    REQUIRE(csr.colidx() == std::vector<int>{{1, 2, 7, 8, 4, 8}});
+    REQUIRE(csr.rowptr() == std::vector<int>{{1, 1, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7}});
   }
 }
