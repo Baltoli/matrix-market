@@ -26,20 +26,28 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
   auto nnz = std::atoi(col->data());
 
   for(auto i = 0; line != all_lines.end() && i < nnz; ++line, ++nnz) {
-    mat.process_line(left_trim(*line));
+    mat.process_line(left_trim(*line), data_header.symmetry_type());
   }
 
   return mat;
 }
 
-void coordinate_matrix::process_line(std::string_view line)
+void coordinate_matrix::process_line(std::string_view line, symmetry sym)
 {
   auto it = columns(line).begin();
   auto row = std::atoi((it++)->data());
   auto col = std::atoi((it++)->data());
   auto val = std::stod(it->data());
 
-  entries_.insert_or_assign({row, col}, val);
+  if(sym == symmetry::general) {
+    entries_.insert_or_assign({row, col}, val);
+  } else if(sym == symmetry::symmetric) {
+    entries_.insert_or_assign({row, col}, val);
+    entries_.insert_or_assign({col, row}, val);
+  } else if(sym == symmetry::skew_symmetric) {
+    entries_.insert_or_assign({row, col}, val);
+    entries_.insert_or_assign({col, row}, -val);
+  }
 }
 
 double coordinate_matrix::operator()(size_t row, size_t col) const

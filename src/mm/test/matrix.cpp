@@ -8,7 +8,8 @@ using namespace mm;
 
 TEST_CASE("can use coordinate matrices")
 {
-  auto data = R"(
+  SECTION("with general symmetry") {
+    auto data = R"(
 %%MatrixMarket matrix coordinate real general
 % Can have some comment lines after the header
 % and another
@@ -23,21 +24,65 @@ TEST_CASE("can use coordinate matrices")
 0 4 5.0
 )";
 
-  auto mat = coordinate_matrix::read_from_string(data);
-  REQUIRE(mat(0, 0) == 1.02);
-  REQUIRE(mat(0, 1) == 2.34234);
-  REQUIRE(mat(0, 2) == 3.234);
-  REQUIRE(mat(0, 3) == 4.1);
-  REQUIRE(mat(0, 4) == 5.0);
+    auto mat = coordinate_matrix::read_from_string(data);
+    REQUIRE(mat(0, 0) == 1.02);
+    REQUIRE(mat(0, 1) == 2.34234);
+    REQUIRE(mat(0, 2) == 3.234);
+    REQUIRE(mat(0, 3) == 4.1);
+    REQUIRE(mat(0, 4) == 5.0);
 
-  REQUIRE(mat(1, 1) == 0.0);
-  REQUIRE(mat(3, 7) == 0.0);
-  REQUIRE(mat(6, 1) == 0.0);
-  REQUIRE(mat(2, 3) == 0.0);
-  REQUIRE(mat(0, 7) == 0.0);
+    REQUIRE(mat(1, 1) == 0.0);
+    REQUIRE(mat(3, 7) == 0.0);
+    REQUIRE(mat(6, 1) == 0.0);
+    REQUIRE(mat(2, 3) == 0.0);
+    REQUIRE(mat(0, 7) == 0.0);
 
-  REQUIRE(mat.cols() == 8);
-  REQUIRE(mat.rows() == 10);
+    REQUIRE(mat.cols() == 8);
+    REQUIRE(mat.rows() == 10);
+  }
+
+  SECTION("with symmetric symmetry") {
+    auto data = R"(
+%%MatrixMarket matrix coordinate real symmetric
+% Can have some comment lines after the header
+% and another
+%
+% one final one
+% rows cols nnz
+10 10 5
+0 0 1.02
+2 1 2.34234
+3 2 3.234
+)";
+    auto mat = coordinate_matrix::read_from_string(data);
+    REQUIRE(mat(0, 0) == 1.02);
+    REQUIRE(mat(2, 1) == 2.34234);
+    REQUIRE(mat(2, 1) == mat(1, 2));
+    REQUIRE(mat(3, 2) == 3.234);
+    REQUIRE(mat(3, 2) == mat(2, 3));
+  }
+
+  SECTION("with skew-symmetric symmetry") {
+    auto data = R"(
+%%MatrixMarket matrix coordinate real skew-symmetric
+% Can have some comment lines after the header
+% and another
+%
+% one final one
+% rows cols nnz
+10 10 5
+0 4 1.02
+2 1 2.34234
+3 2 3.234
+)";
+    auto mat = coordinate_matrix::read_from_string(data);
+    REQUIRE(mat(0, 4) == 1.02);
+    REQUIRE(mat(0, 4) == -mat(4, 0));
+    REQUIRE(mat(2, 1) == 2.34234);
+    REQUIRE(mat(2, 1) == -mat(1, 2));
+    REQUIRE(mat(3, 2) == 3.234);
+    REQUIRE(mat(3, 2) == -mat(2, 3));
+  }
 }
 
 TEST_CASE("can construct CSR matrices")

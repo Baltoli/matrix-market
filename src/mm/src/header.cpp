@@ -77,7 +77,7 @@ std::string_view header::read_symmetry(std::string_view str)
   auto [m2, r2] = starts_with(str, "symmetric");
   if(m2) { symmetry_type_ = symmetry::symmetric; return r2; }
 
-  auto [m3, r3] = starts_with(str, "skew_symmetric");
+  auto [m3, r3] = starts_with(str, "skew-symmetric");
   if(m3) { symmetry_type_ = symmetry::skew_symmetric; return r3; }
 
   auto [m4, r4] = starts_with(str, "hermitian");

@@ -43,7 +43,7 @@ TEST_CASE("constructing headers")
     REQUIRE(h2.field_type() == field::double_);
     REQUIRE(h2.symmetry_type() == symmetry::symmetric);
     
-    auto h3 = header("%%MatrixMarket matrix array complex skew_symmetric");
+    auto h3 = header("%%MatrixMarket matrix array complex skew-symmetric");
     REQUIRE(h3.object_type() == object::matrix);
     REQUIRE(h3.format_type() == format::array);
     REQUIRE(h3.field_type() == field::complex_);
