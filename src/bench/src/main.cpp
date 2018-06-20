@@ -56,9 +56,10 @@ void run_benchmark(Func&& harness, std::string const& path)
   std::cerr << "Done loading in " << time.count() << "s\n";
 
   auto x = std::vector<double>(csr.cols());
-  std::generate(x.begin(), x.end(), [] {
-    auto rd = std::random_device{};
-    auto dist = std::uniform_real_distribution<>(-1.0, 1.0);
+  auto rd = std::random_device{};
+  auto dist = std::uniform_real_distribution<>(-1.0, 1.0);
+
+  std::generate(x.begin(), x.end(), [&rd,&dist] {
     return dist(rd);
   });
 
@@ -67,13 +68,14 @@ void run_benchmark(Func&& harness, std::string const& path)
   auto raw = mm::csr(csr);
 
   start = std::chrono::system_clock::now();
-  for(auto i = 0; i < 128; ++i) {
+  for(auto i = 0; i < 1024; ++i) {
     harness(y.data(), raw.a, x.data(), raw.rowstr, raw.colidx, raw.rows);
   }
   end = std::chrono::system_clock::now();
   time = end - start;
   
-  std::cerr << "SPMV iterations done in " << time.count() << "s\n";
+  std::cerr << "SPMV iterations done\n";
+  std::cout << time.count() << '\n';
 }
 
 using harness_t = void (double *, const double *, const double *, const int *, const int *, const int *);
