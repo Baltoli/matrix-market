@@ -51,6 +51,18 @@ struct benchmark_stats {
   size_t iters;
 };
 
+std::ostream& operator<<(std::ostream& os, benchmark_stats const& stats)
+{
+  os << stats.path << " "
+     << stats.time << " "
+     << stats.rows << " "
+     << stats.cols << " "
+     << stats.nnz << " "
+     << stats.iters;
+
+  return os;
+}
+
 template <typename Func>
 benchmark_stats run_benchmark(Func&& harness, std::string const& path)
 {
@@ -103,6 +115,6 @@ int main(int argc, char **argv)
   for(int i = 2; i < argc; ++i) {
     auto path = std::string(argv[i]);
     auto stats = run_benchmark(harness, path);
-    std::cout << stats.path << " " << stats.time << " " << stats.nnz << '\n';
+    std::cout << stats << '\n';
   }
 }
