@@ -80,8 +80,21 @@ void run_benchmark(Func&& harness, std::string const& path)
 
 using harness_t = void (double *, const double *, const double *, const int *, const int *, const int *);
 
+void usage(char **argv)
+{
+  std::cerr << "Usage: " << argv[0] << " library" << " [benchmarks...]\n";
+  std::cerr << "Arguments:\n";
+  std::cerr << "  library: Path to a shared library with a compatible spmv_harness_ implementation\n";
+  std::cerr << "  benchmarks: One or more paths to matrix market files to benchmark\n";
+}
+
 int main(int argc, char **argv)
 {
+  if(argc < 3) {
+    usage(argv);
+    return 1;
+  }
+
   auto dyn = dynamic_library(argv[1]);
   auto harness = dyn.symbol<harness_t>("spmv_harness_");
 
