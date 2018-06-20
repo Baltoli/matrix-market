@@ -42,18 +42,20 @@ private:
   void *lib_;
 };
 
-template <typename Func>
-void run_benchmark(Func&& harness, std::string const& path)
-{
-  std::cerr << "Loading matrix benchmark: " << path << '\n';
-  auto start = std::chrono::system_clock::now();
+struct benchmark_stats {
+  std::string path;
+  double time;
+  size_t rows;
+  size_t cols;
+  size_t nnz;
+  size_t iters;
+};
 
+template <typename Func>
+benchmark_stats run_benchmark(Func&& harness, std::string const& path)
+{
   auto mat = mm::coordinate_matrix::read_from_file(path);
   auto csr = mm::csr_matrix(mm::one_based_index, mat);
-
-  auto end = std::chrono::system_clock::now();
-  std::chrono::duration<double> time = end - start;
-  std::cerr << "Done loading in " << time.count() << "s\n";
 
   auto x = std::vector<double>(csr.cols());
   auto rd = std::random_device{};
@@ -67,15 +69,15 @@ void run_benchmark(Func&& harness, std::string const& path)
 
   auto raw = mm::csr(csr);
 
-  start = std::chrono::system_clock::now();
-  for(auto i = 0; i < 1024; ++i) {
+  auto start = std::chrono::system_clock::now();
+  auto iters = 1024u;
+  for(auto i = 0; i < iters; ++i) {
     harness(y.data(), raw.a, x.data(), raw.rowstr, raw.colidx, raw.rows);
   }
-  end = std::chrono::system_clock::now();
-  time = end - start;
-  
-  std::cerr << "SPMV iterations done\n";
-  std::cout << time.count() << '\n';
+  auto end = std::chrono::system_clock::now();
+  std::chrono::duration<double> time = end - start;
+
+  return { path, time.count(), csr.rows(), csr.cols(), csr.nnz(), iters };
 }
 
 using harness_t = void (double *, const double *, const double *, const int *, const int *, const int *);
@@ -100,6 +102,7 @@ int main(int argc, char **argv)
 
   for(int i = 2; i < argc; ++i) {
     auto path = std::string(argv[i]);
-    run_benchmark(harness, path);
+    auto stats = run_benchmark(harness, path);
+    std::cout << stats.path << " " << stats.time << " " << stats.nnz << '\n';
   }
 }
