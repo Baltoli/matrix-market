@@ -117,32 +117,26 @@ csr_matrix::csr_matrix(one_based_index_t tag, coordinate_matrix const& coo) :
 csr_matrix::csr_matrix(size_t o, coordinate_matrix const& coo) :
  offset_(o),  rows_(coo.rows()), cols_(coo.cols())
 {
-  auto const& entries = coo.entries();
-
   rowptr_.push_back(offset_);
 
-  for(auto row = 0u; row < rows_; ++row) {
-    size_t row_count = 0;
+  size_t current_row = 0;
+  size_t running_total = rowptr_.front();
 
-    const auto on_row = [row] (auto coord) {
-      return coord.first.first == row;
-    };
-
-    auto it = std::find_if(entries.begin(), entries.end(), on_row);
-
-    while(it != entries.end()) {
-      auto [coord, val] = *it;
-      row_count++;
-      nnz_++;
-
-      colidx_.push_back(coord.second + offset_);
-      values_.push_back(val);
-
-      it = std::find_if(std::next(it), entries.end(), on_row);
+  for(auto e : coo.entries()) {
+    for( ; current_row < e.first.first; ++current_row) {
+      rowptr_.push_back(running_total);
     }
 
-    rowptr_.push_back(row_count + rowptr_.back());
+    running_total++;
+    colidx_.push_back(e.first.second + offset_);
+    values_.push_back(e.second);
   }
+
+  for( ; current_row < rows_; ++current_row) {
+    rowptr_.push_back(running_total);
+  }
+
+  nnz_ = running_total - offset_;
 }
 
 double csr_matrix::operator()(size_t row, size_t col) const
