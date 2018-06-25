@@ -96,9 +96,10 @@ using harness_t = void (double *, const double *, const double *, const int *, c
 
 void usage(char **argv)
 {
-  std::cerr << "Usage: " << argv[0] << " library" << " [benchmarks...]\n";
+  std::cerr << "Usage: " << argv[0] << " library" << " label" << " [benchmarks...]\n";
   std::cerr << "Arguments:\n";
   std::cerr << "  library: Path to a shared library with a compatible spmv_harness_ implementation\n";
+  std::cerr << "  label: Text label to be printed at the end of each row to identify the implementation used\n";
   std::cerr << "  benchmarks: One or more paths to matrix market files to benchmark\n";
 }
 
@@ -112,9 +113,9 @@ int main(int argc, char **argv)
   auto dyn = dynamic_library(argv[1]);
   auto harness = dyn.symbol<harness_t>("spmv_harness_");
 
-  for(int i = 2; i < argc; ++i) {
+  for(int i = 3; i < argc; ++i) {
     auto path = std::string(argv[i]);
     auto stats = run_benchmark(harness, path);
-    std::cout << stats << '\n';
+    std::cout << stats << " " << argv[2] << '\n';
   }
 }
