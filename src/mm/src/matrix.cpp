@@ -29,7 +29,7 @@ coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
   auto nnz = std::atoi(col->data());
 
   for(auto i = 0; line != all_lines.end() && i < nnz; ++line, ++i) {
-    mat.process_line(left_trim(*line), data_header.symmetry_type());
+    mat.process_line(left_trim(*line), data_header.symmetry_type(), data_header.field_type());
   }
 
   return mat;
@@ -55,18 +55,25 @@ coordinate_matrix coordinate_matrix::read_from_file(std::string const& filename)
   auto nnz = std::atoi(col->data());
 
   for(auto i = 0; std::getline(in_stream, line) && i < nnz; ++i) {
-    mat.process_line(left_trim(line), data_header.symmetry_type());
+    mat.process_line(left_trim(line), data_header.symmetry_type(), data_header.field_type());
   }
 
   return mat;
 }
 
-void coordinate_matrix::process_line(std::string_view line, symmetry sym)
+void coordinate_matrix::process_line(std::string_view line, symmetry sym, field f)
 {
   auto it = columns(line).begin();
   auto row = std::atoi((it++)->data());
   auto col = std::atoi((it++)->data());
-  auto val = std::stod(it->data());
+
+  auto val = [f,it] {
+    if(f == field::pattern) {
+      return 1.0;
+    } else {
+      return std::stod(it->data());
+    }
+  }();
 
   if(sym == symmetry::general) {
     entries_.insert_or_assign({row, col}, val);

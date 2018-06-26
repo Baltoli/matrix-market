@@ -8,6 +8,30 @@ using namespace mm;
 
 TEST_CASE("can use coordinate matrices")
 {
+  SECTION("over a pattern field") {
+    auto data = R"(
+%%MatrixMarket matrix coordinate pattern general
+% Can have some comment lines after the header
+% and another
+%
+% one final one
+% rows cols nnz
+10 8 5
+0 0
+0 1
+0 2
+0 3
+0 4
+)";
+
+    auto mat = coordinate_matrix::read_from_string(data);
+    REQUIRE(mat(0, 0) == 1.0);
+    REQUIRE(mat(0, 1) == 1.0);
+    REQUIRE(mat(0, 2) == 1.0);
+    REQUIRE(mat(0, 3) == 1.0);
+    REQUIRE(mat(0, 4) == 1.0);
+  }
+
   SECTION("with general symmetry") {
     auto data = R"(
 %%MatrixMarket matrix coordinate real general

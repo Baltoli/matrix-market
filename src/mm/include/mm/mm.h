@@ -55,7 +55,7 @@ public:
 private:
   coordinate_matrix() = default;
   
-  void process_line(std::string_view line, symmetry sym);
+  void process_line(std::string_view line, symmetry sym, field f);
 
   size_t rows_ = 0;
   size_t cols_ = 0;
