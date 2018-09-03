@@ -85,20 +85,47 @@ template <typename Func>
 benchmark_stats run_benchmark(Func&& harness, std::string const& path)
 {
   auto mat = mm::coordinate_matrix::read_from_file(path);
+  if(mat.rows() != mat.cols()) {
+    throw std::runtime_error("Pagerank needs a square matrix!");
+  }
   mat.normalise();
 
   auto csr = mm::csr_matrix(mm::one_based_index, mat);
+  auto d = 0.85;
+  csr.scale(d);
 
-  auto x = random_starting_vector(csr.cols());
+  auto x = random_starting_vector(csr.rows());
   auto y = std::vector<double>(csr.rows(), 0);
 
   auto raw = mm::csr(csr);
 
   auto start = std::chrono::system_clock::now();
 
+  volatile double error;
+  std::vector<double> last_vector;
+
   auto iters = 1024u;
   for(auto i = 0; i < iters; ++i) {
+    error = 0.0;
+
+    last_vector = x;
+
+    auto mean = std::accumulate(x.begin(), x.end(), 0.0) / x.size();
+    auto add_term = (1 - d) * mean;
+
+    /* v = (d * M) * v + ((1 - d)) * v.average(); */
+    /* error = (v - last_v).l2norm(); */
     harness(y.data(), raw.a, x.data(), raw.rowstr, raw.colidx, raw.rows);
+
+    std::for_each(y.begin(), y.end(), [add_term] (auto& out) {
+      out += add_term;
+    });
+
+    x = y;
+    for(auto i = 0; i < csr.rows(); ++i) {
+      error += std::pow(x.at(i) - last_vector.at(i), 2);
+    }
+    error = std::sqrt(error);
   }
 
   auto end = std::chrono::system_clock::now();
