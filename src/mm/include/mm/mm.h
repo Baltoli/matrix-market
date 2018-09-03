@@ -82,6 +82,8 @@ public:
 
   size_t nnz() const;
 
+  void scale(double d);
+
 private:
   csr_matrix(size_t offset, coordinate_matrix const& coo);
 

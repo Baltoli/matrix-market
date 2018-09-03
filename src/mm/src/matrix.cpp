@@ -193,6 +193,13 @@ double csr_matrix::operator()(size_t row, size_t col) const
   return 0.0;
 }
 
+void csr_matrix::scale(double d)
+{
+  for(auto i = 0; i < nnz_; ++i) {
+    values_[i] *= d;
+  }
+}
+
 size_t csr_matrix::rows() const
 {
   return rows_;

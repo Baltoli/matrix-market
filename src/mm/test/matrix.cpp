@@ -209,3 +209,15 @@ TEST_CASE("can normalise coordinate matrices")
     REQUIRE(total == 1.0);
   }
 }
+
+TEST_CASE("can scale CSR matrices")
+{
+  auto path = RESOURCE_DIR "/test/test.mtx";
+
+  auto coo = coordinate_matrix::read_from_file(path);
+  auto csr = csr_matrix(coo);
+
+  csr.scale(0.5);
+
+  REQUIRE(csr.values() == std::vector<double>{{0.5, 1.0, 1.5, 2.0, 2.5, 3.0}});
+}
