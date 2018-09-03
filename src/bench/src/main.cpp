@@ -63,29 +63,44 @@ std::ostream& operator<<(std::ostream& os, benchmark_stats const& stats)
   return os;
 }
 
-template <typename Func>
-benchmark_stats run_benchmark(Func&& harness, std::string const& path)
+std::vector<double> random_starting_vector(size_t rows)
 {
-  auto mat = mm::coordinate_matrix::read_from_file(path);
-  auto csr = mm::csr_matrix(mm::one_based_index, mat);
-
-  auto x = std::vector<double>(csr.cols());
+  std::vector<double> x(rows, 0);
   auto rd = std::random_device{};
-  auto dist = std::uniform_real_distribution<>(-1.0, 1.0);
+  auto dist = std::uniform_real_distribution<>(0, 1.0);
 
   std::generate(x.begin(), x.end(), [&rd,&dist] {
     return dist(rd);
   });
 
+  auto sum = std::accumulate(x.begin(), x.end(), 0.0);
+  std::for_each(x.begin(), x.end(), [sum](auto& val) {
+    val /= sum;
+  });
+
+  return x;
+}
+
+template <typename Func>
+benchmark_stats run_benchmark(Func&& harness, std::string const& path)
+{
+  auto mat = mm::coordinate_matrix::read_from_file(path);
+  mat.normalise();
+
+  auto csr = mm::csr_matrix(mm::one_based_index, mat);
+
+  auto x = random_starting_vector(csr.cols());
   auto y = std::vector<double>(csr.rows(), 0);
 
   auto raw = mm::csr(csr);
 
   auto start = std::chrono::system_clock::now();
+
   auto iters = 1024u;
   for(auto i = 0; i < iters; ++i) {
     harness(y.data(), raw.a, x.data(), raw.rowstr, raw.colidx, raw.rows);
   }
+
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> time = end - start;
 
