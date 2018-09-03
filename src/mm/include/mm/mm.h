@@ -52,6 +52,8 @@ public:
   static coordinate_matrix read_from_string(std::string_view data);
   static coordinate_matrix read_from_file(std::string const& filename);
 
+  void normalise();
+
 private:
   coordinate_matrix() = default;
   

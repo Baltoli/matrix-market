@@ -86,6 +86,37 @@ void coordinate_matrix::process_line(std::string_view line, symmetry sym, field 
   }
 }
 
+void coordinate_matrix::normalise()
+{
+  auto lim = std::min(rows(), cols());
+
+  for(auto i = 0; i < lim; ++i) {
+    entries_.insert_or_assign({i, i}, 0);
+  }
+
+  for(auto row = 0; row < rows(); ++row) {
+    auto total = 0.0;
+    for(auto col = 0; col < cols(); ++col) {
+      total += (*this)(row, col);
+    }
+
+    if(total == 0.0) {
+      auto off_diag = [&] {
+        if(row == 0) { return 1; }
+        else { return row - 1; } 
+      }();
+      entries_.insert_or_assign({row, off_diag}, 1.0);
+    } else {
+      for(auto col = 0; col < cols(); ++col) {
+        auto found = entries_.find({row, col});
+        if(found != entries_.end()) {
+          entries_.at({row, col}) /= total;
+        }
+      }
+    }
+  }
+}
+
 double coordinate_matrix::operator()(size_t row, size_t col) const
 {
   auto found = entries_.find({row, col});

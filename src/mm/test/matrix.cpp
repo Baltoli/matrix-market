@@ -185,3 +185,27 @@ TEST_CASE("can load matrices from file")
   REQUIRE(coo(7, 1) == 5.00);
   REQUIRE(coo(8, 8) == 6.00);
 }
+
+TEST_CASE("can normalise coordinate matrices")
+{
+  auto path = RESOURCE_DIR "/test/normal.mtx";
+
+  auto coo = coordinate_matrix::read_from_file(path);
+
+  REQUIRE(coo.rows() == 5);
+  REQUIRE(coo.cols() == 5);
+
+  coo.normalise();
+
+  for(auto i = 0; i < 5; ++i) {
+    REQUIRE(coo(i,i) == 0);
+  }
+
+  for(auto row = 0; row < 5; ++row) {
+    auto total = 0.0;
+    for(auto col = 0; col < 5; ++col) {
+      total += coo(row, col);
+    }
+    REQUIRE(total == 1.0);
+  }
+}

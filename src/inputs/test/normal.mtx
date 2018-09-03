@@ -1,0 +1,13 @@
+%%MatrixMarket matrix coordinate pattern general
+% Some
+% Comment lines before I
+% Use the real ones to describe a matrix
+5 5 8
+0 0
+0 2
+2 0
+2 1
+2 4
+3 4
+4 0
+4 4
