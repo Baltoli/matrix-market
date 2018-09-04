@@ -94,7 +94,7 @@ void coordinate_matrix::normalise()
   /*   entries_.insert_or_assign({i, i}, 0); */
   /* } */
   
-  auto row_totals = std::vector<double>(rows(), 0.0);
+  auto row_totals = std::vector<double>(rows() + 1, 0.0);
   
   for(auto& entry : entries_) {
     if(entry.first.first == entry.first.second) {
@@ -107,7 +107,7 @@ void coordinate_matrix::normalise()
     entry.second = entry.second / row_totals.at(entry.first.first);
   }
 
-  for(auto i = 0; i < rows(); ++i) {
+  for(auto i = 0; i <= rows(); ++i) {
     if(row_totals.at(i) == 0) {
       entries_.insert_or_assign({i, (i == 0 ? 1 : 0)}, 1.0);
     }
