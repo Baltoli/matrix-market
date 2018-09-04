@@ -93,7 +93,24 @@ void coordinate_matrix::normalise()
   for(auto i = 0; i < lim; ++i) {
     entries_.insert_or_assign({i, i}, 0);
   }
+  
+  auto row_totals = std::vector<double>(rows(), 0.0);
+  
+  for(auto entry : entries_) {
+    row_totals.at(entry.first.first) += entry.second;
+  }
 
+  for(auto& entry : entries_) {
+    entry.second = entry.second / row_totals.at(entry.first.first);
+  }
+
+  for(auto i = 0; i < rows(); ++i) {
+    if(row_totals.at(i) == 0) {
+      entries_.insert_or_assign({i, (i == 0 ? 1 : i)}, 1.0);
+    }
+  }
+
+  /*
   for(auto row = 0; row < rows(); ++row) {
     auto total = 0.0;
     for(auto col = 0; col < cols(); ++col) {
@@ -115,6 +132,7 @@ void coordinate_matrix::normalise()
       }
     }
   }
+  */
 }
 
 double coordinate_matrix::operator()(size_t row, size_t col) const
