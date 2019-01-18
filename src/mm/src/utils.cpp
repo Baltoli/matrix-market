@@ -4,7 +4,7 @@
 
 namespace mm {
 
-std::string_view left_trim(std::string_view str)
+std::string left_trim(std::string const& str)
 {
   auto i = 0u;
   while(i < str.size() && std::isspace(str.at(i))) { ++i; }
@@ -12,7 +12,7 @@ std::string_view left_trim(std::string_view str)
   return str.substr(i);
 }
 
-std::pair<bool, std::string_view> starts_with(std::string_view str, std::string_view prefix)
+std::pair<bool, std::string> starts_with(std::string const& str, std::string const& prefix)
 {
   if(prefix.size() > str.size()) {
     return { false, str };
@@ -22,7 +22,7 @@ std::pair<bool, std::string_view> starts_with(std::string_view str, std::string_
   return { eq, eq ? left_trim(str.substr(prefix.length())) : str };
 }
 
-split_iterator::split_iterator(char d, std::string_view s, std::string_view::size_type begin)
+split_iterator::split_iterator(char d, std::string s, std::string::size_type begin)
   : delim_(d), data_(s), line_begin_(begin), line_end_(begin)
 {
   advance();
@@ -61,9 +61,9 @@ split_iterator split_iterator::operator++(int)
   return ret;
 }
 
-proxy<std::string_view> split_iterator::operator->() const
+proxy<std::string> split_iterator::operator->() const
 {
-  return proxy<std::string_view>(**this);
+  return proxy<std::string>(**this);
 }
 
 void split_iterator::advance()

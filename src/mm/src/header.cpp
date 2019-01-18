@@ -8,7 +8,7 @@
 
 namespace mm {
 
-header::header(std::string_view header_line)
+header::header(std::string header_line)
 {
   auto after_header = read_prefix(header_line);
   auto after_object = read_object(after_header);
@@ -17,7 +17,7 @@ header::header(std::string_view header_line)
   read_symmetry(after_field);
 }
 
-std::string_view header::read_prefix(std::string_view str) const
+std::string header::read_prefix(std::string str) const
 {
   auto [match, rest] = starts_with(str, "%%MatrixMarket");
   if(!match) { 
@@ -27,7 +27,7 @@ std::string_view header::read_prefix(std::string_view str) const
   return left_trim(rest);
 }
 
-std::string_view header::read_object(std::string_view str)
+std::string header::read_object(std::string str)
 {
   auto [m1, r1] = starts_with(str, "matrix");
   if(m1) { object_type_ = object::matrix; return r1; }
@@ -38,7 +38,7 @@ std::string_view header::read_object(std::string_view str)
   throw std::invalid_argument("Invalid object type");
 }
 
-std::string_view header::read_format(std::string_view str)
+std::string header::read_format(std::string str)
 {
   auto [m1, r1] = starts_with(str, "coordinate");
   if(m1) { format_type_ = format::coordinate; return r1; }
@@ -49,7 +49,7 @@ std::string_view header::read_format(std::string_view str)
   throw std::invalid_argument("Invalid format type");
 }
 
-std::string_view header::read_field(std::string_view str)
+std::string header::read_field(std::string str)
 {
   auto [m1, r1] = starts_with(str, "real");
   if(m1) { field_type_ = field::real; return r1; }
@@ -69,7 +69,7 @@ std::string_view header::read_field(std::string_view str)
   throw std::invalid_argument("Invalid field type");
 }
 
-std::string_view header::read_symmetry(std::string_view str)
+std::string header::read_symmetry(std::string str)
 {
   auto [m1, r1] = starts_with(str, "general");
   if(m1) { symmetry_type_ = symmetry::general; return r1; }

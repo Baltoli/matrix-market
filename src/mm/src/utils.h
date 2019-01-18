@@ -2,16 +2,15 @@
 
 #include <iostream>
 #include <iterator>
-#include <string_view>
 
 namespace mm {
 
-std::string_view left_trim(std::string_view str);
+std::string left_trim(std::string const& str);
 
-std::pair<bool, std::string_view> starts_with(std::string_view str, std::string_view prefix);
+std::pair<bool, std::string> starts_with(std::string const& str, std::string const& prefix);
 
 template <typename F>
-void for_each_line(std::string_view str, F&& f)
+void for_each_line(std::string const& str, F&& f)
 {
   auto line_begin = 0;
   auto line_end = 0;
@@ -45,49 +44,49 @@ private:
 class split_iterator {
 public:
   using difference_type = void;
-  using value_type = std::string_view;
-  using pointer = std::string_view*;
-  using reference = std::string_view&;
+  using value_type = std::string;
+  using pointer = std::string*;
+  using reference = std::string&;
   using category = std::input_iterator_tag;
 
-  split_iterator(char d_, std::string_view, std::string_view::size_type);
+  split_iterator(char d_, std::string, std::string::size_type);
 
   value_type operator*() const;
   bool operator==(split_iterator const& other) const;
   bool operator!=(split_iterator const& other) const;
   split_iterator& operator++();
   split_iterator operator++(int);
-  proxy<std::string_view> operator->() const;
+  proxy<std::string> operator->() const;
 
 private:
   void advance();
 
   char delim_;
-  std::string_view data_;
-  std::string_view::size_type line_begin_;
-  std::string_view::size_type line_end_;
+  std::string data_;
+  std::string::size_type line_begin_;
+  std::string::size_type line_end_;
 };
 
 class lines {
 public:
-  lines(std::string_view str) : str_(str) {}
+  lines(std::string str) : str_(str) {}
 
   split_iterator begin() const { return split_iterator('\n', str_, 0); }
-  split_iterator end() const { return split_iterator('\n', str_, std::string_view::npos); }
+  split_iterator end() const { return split_iterator('\n', str_, std::string::npos); }
 
 private:
-  std::string_view str_;
+  std::string str_;
 };
 
 class columns {
 public:
-  columns(std::string_view str) : str_(str) {}
+  columns(std::string str) : str_(str) {}
 
   split_iterator begin() const { return split_iterator(' ', str_, 0); }
-  split_iterator end() const { return split_iterator(' ', str_, std::string_view::npos); }
+  split_iterator end() const { return split_iterator(' ', str_, std::string::npos); }
 
 private:
-  std::string_view str_;
+  std::string str_;
 };
 
 }

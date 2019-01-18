@@ -7,7 +7,7 @@
 
 namespace mm {
 
-coordinate_matrix coordinate_matrix::read_from_string(std::string_view data)
+coordinate_matrix coordinate_matrix::read_from_string(std::string const& data)
 {
   auto mat = coordinate_matrix{};
 
@@ -61,7 +61,7 @@ coordinate_matrix coordinate_matrix::read_from_file(std::string const& filename)
   return mat;
 }
 
-void coordinate_matrix::process_line(std::string_view line, symmetry sym, field f)
+void coordinate_matrix::process_line(std::string const& line, symmetry sym, field f)
 {
   auto it = columns(line).begin();
   auto row = std::atoi((it++)->data());

@@ -2,7 +2,7 @@
 
 #include <map>
 #include <memory>
-#include <string_view>
+#include <string>
 #include <vector>
 
 namespace mm {
@@ -14,7 +14,7 @@ enum class symmetry { general, symmetric, skew_symmetric, hermitian };
 
 class header {
 public:
-  explicit header(std::string_view header_line);
+  explicit header(std::string header_line);
 
   object object_type() const;
   format format_type() const;
@@ -22,11 +22,11 @@ public:
   symmetry symmetry_type() const;
 
 private:
-  std::string_view read_prefix(std::string_view) const;
-  std::string_view read_object(std::string_view);
-  std::string_view read_format(std::string_view);
-  std::string_view read_field(std::string_view);
-  std::string_view read_symmetry(std::string_view);
+  std::string read_prefix(std::string) const;
+  std::string read_object(std::string);
+  std::string read_format(std::string);
+  std::string read_field(std::string);
+  std::string read_symmetry(std::string);
 
   object object_type_;
   format format_type_;
@@ -49,7 +49,7 @@ public:
 
   std::map<std::pair<size_t, size_t>, double> const& entries() const;
 
-  static coordinate_matrix read_from_string(std::string_view data);
+  static coordinate_matrix read_from_string(std::string const& data);
   static coordinate_matrix read_from_file(std::string const& filename);
 
   void normalise();
@@ -57,7 +57,7 @@ public:
 private:
   coordinate_matrix() = default;
   
-  void process_line(std::string_view line, symmetry sym, field f);
+  void process_line(std::string const& line, symmetry sym, field f);
 
   size_t rows_ = 0;
   size_t cols_ = 0;
