@@ -19,7 +19,11 @@ header::header(std::string header_line)
 
 std::string header::read_prefix(std::string str) const
 {
-  auto [match, rest] = starts_with(str, "%%MatrixMarket");
+  auto pair = starts_with(str, "%%MatrixMarket");
+
+  auto match = pair.first;
+  auto rest = pair.second;
+
   if(!match) { 
     throw std::invalid_argument("Invalid header line");
   }
@@ -29,10 +33,14 @@ std::string header::read_prefix(std::string str) const
 
 std::string header::read_object(std::string str)
 {
-  auto [m1, r1] = starts_with(str, "matrix");
+  auto pair1 = starts_with(str, "matrix");
+  auto m1 = pair1.first;
+  auto r1 = pair1.second;
   if(m1) { object_type_ = object::matrix; return r1; }
 
-  auto [m2, r2] = starts_with(str, "vector");
+  auto pair2 = starts_with(str, "vector");
+  auto m2 = pair2.first;
+  auto r2 = pair2.second;
   if(m2) { object_type_ = object::vector; return r2; }
 
   throw std::invalid_argument("Invalid object type");
@@ -40,10 +48,14 @@ std::string header::read_object(std::string str)
 
 std::string header::read_format(std::string str)
 {
-  auto [m1, r1] = starts_with(str, "coordinate");
+  auto pair1 = starts_with(str, "coordinate");
+  auto m1 = pair1.first;
+  auto r1 = pair1.second;
   if(m1) { format_type_ = format::coordinate; return r1; }
 
-  auto [m2, r2] = starts_with(str, "array");
+  auto pair2 = starts_with(str, "array");
+  auto m2 = pair2.first;
+  auto r2 = pair2.second;
   if(m2) { format_type_ = format::array; return r2; }
 
   throw std::invalid_argument("Invalid format type");
@@ -51,19 +63,29 @@ std::string header::read_format(std::string str)
 
 std::string header::read_field(std::string str)
 {
-  auto [m1, r1] = starts_with(str, "real");
+  auto pair1 = starts_with(str, "real");
+  auto m1 = pair1.first;
+  auto r1 = pair1.second;
   if(m1) { field_type_ = field::real; return r1; }
 
-  auto [m2, r2] = starts_with(str, "double");
+  auto pair2 = starts_with(str, "double");
+  auto m2 = pair2.first;
+  auto r2 = pair2.second;
   if(m2) { field_type_ = field::double_; return r2; }
 
-  auto [m3, r3] = starts_with(str, "complex");
+  auto pair3 = starts_with(str, "complex");
+  auto m3 = pair3.first;
+  auto r3 = pair3.second;
   if(m3) { field_type_ = field::complex_; return r3; }
 
-  auto [m4, r4] = starts_with(str, "integer");
+  auto pair4 = starts_with(str, "integer");
+  auto m4 = pair4.first;
+  auto r4 = pair4.second;
   if(m4) { field_type_ = field::integer; return r4; }
 
-  auto [m5, r5] = starts_with(str, "pattern");
+  auto pair5 = starts_with(str, "pattern");
+  auto m5 = pair5.first;
+  auto r5 = pair5.second;
   if(m5) { field_type_ = field::pattern; return r5; }
 
   throw std::invalid_argument("Invalid field type");
@@ -71,16 +93,24 @@ std::string header::read_field(std::string str)
 
 std::string header::read_symmetry(std::string str)
 {
-  auto [m1, r1] = starts_with(str, "general");
+  auto pair1 = starts_with(str, "general");
+  auto m1 = pair1.first;
+  auto r1 = pair1.second;
   if(m1) { symmetry_type_ = symmetry::general; return r1; }
 
-  auto [m2, r2] = starts_with(str, "symmetric");
+  auto pair2 = starts_with(str, "symmetric");
+  auto m2 = pair2.first;
+  auto r2 = pair2.second;
   if(m2) { symmetry_type_ = symmetry::symmetric; return r2; }
 
-  auto [m3, r3] = starts_with(str, "skew-symmetric");
+  auto pair3 = starts_with(str, "skew-symmetric");
+  auto m3 = pair3.first;
+  auto r3 = pair3.second;
   if(m3) { symmetry_type_ = symmetry::skew_symmetric; return r3; }
 
-  auto [m4, r4] = starts_with(str, "hermitian");
+  auto pair4 = starts_with(str, "hermitian");
+  auto m4 = pair4.first;
+  auto r4 = pair4.second;
   if(m4) { symmetry_type_ = symmetry::hermitian; return r4; }
 
   throw std::invalid_argument("Invalid symmetry type");

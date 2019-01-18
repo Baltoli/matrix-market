@@ -7,6 +7,18 @@
 
 namespace mm {
 
+namespace {
+  template <typename Map, typename Value>
+  void insert_or_assign(Map& map, typename Map::key_type&& k, Value&& v)
+  {
+    if(map.find(k) == map.end()) {
+      map.insert({k, v});
+    } else {
+      map.at(k) = v;
+    }
+  }
+}
+
 coordinate_matrix coordinate_matrix::read_from_string(std::string const& data)
 {
   auto mat = coordinate_matrix{};
@@ -76,13 +88,13 @@ void coordinate_matrix::process_line(std::string const& line, symmetry sym, fiel
   }();
 
   if(sym == symmetry::general) {
-    entries_.insert_or_assign({row, col}, val);
+    insert_or_assign(entries_, {row, col}, val);
   } else if(sym == symmetry::symmetric) {
-    entries_.insert_or_assign({row, col}, val);
-    entries_.insert_or_assign({col, row}, val);
+    insert_or_assign(entries_, {row, col}, val);
+    insert_or_assign(entries_, {col, row}, val);
   } else if(sym == symmetry::skew_symmetric) {
-    entries_.insert_or_assign({row, col}, val);
-    entries_.insert_or_assign({col, row}, -val);
+    insert_or_assign(entries_, {row, col}, val);
+    insert_or_assign(entries_, {col, row}, -val);
   }
 }
 
@@ -109,7 +121,7 @@ void coordinate_matrix::normalise()
 
   for(auto i = 0; i <= rows(); ++i) {
     if(row_totals.at(i) == 0) {
-      entries_.insert_or_assign({i, (i == 0 ? 1 : 0)}, 1.0);
+      insert_or_assign(entries_, {i, (i == 0 ? 1 : 0)}, 1.0);
     }
   }
 
