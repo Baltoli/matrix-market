@@ -10,10 +10,6 @@ target_include_directories(mm PUBLIC
   $<INSTALL_INTERFACE:include>
   PRIVATE src)
 
-target_compile_features(mm
-  PUBLIC cxx_std_17
-)
-
 install(TARGETS mm EXPORT MatrixMarketConfig
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
