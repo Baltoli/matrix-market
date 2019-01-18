@@ -51,7 +51,7 @@ coordinate_matrix coordinate_matrix::read_from_file(std::string const& filename)
 {
   auto mat = coordinate_matrix{};
   
-  auto in_stream = std::ifstream(filename);
+  std::ifstream in_stream(filename);
   auto line = std::string{};
 
   std::getline(in_stream, line);
